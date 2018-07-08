@@ -1,3 +1,71 @@
 \begin{thebibliography}{xx}
 
+\harvarditem{}{n.d.}{Mozaryn:2013}
+  \harvardyearleft n.d.\harvardyearright .
+
+\harvarditem{Astrom \harvardand\ T.}{1995}{Astrom:1995}
+Astrom, K. \harvardand\ T., H.  \harvardyearleft 1995\harvardyearright .
+\newblock {\em PID Controllers: Theory, Design, and Tuning, 2nd Edition},
+  Instrument Society of America, Triangle Park, NC.
+
+\harvarditem{G.H.~Cohen}{1953}{Cohen:1953}
+G.H.~Cohen, G.~C.  \harvardyearleft 1953\harvardyearright .
+\newblock Theoretical consideration of retarded control, {\em Transactions of
+  the ASME} {\bf 75}(1):~827--834.
+\newblock DOI:.
+
+\harvarditem{Janiszowski}{2002}{Janiszowski:2002}
+Janiszowski, K.  \harvardyearleft 2002\harvardyearright .
+\newblock {\em Identification of Parametric Models in Examples (in polish)},
+  Exit, Warsaw, Poland.
+
+\harvarditem{J.G.~Ziegler}{1942}{Ziegler:1942}
+J.G.~Ziegler, N.~N.  \harvardyearleft 1942\harvardyearright .
+\newblock Optimum settings for automatic controllers, {\em Transactions of the
+  ASME} {\bf 64}(1):~759–--768.
+\newblock DOI:.
+
+\harvarditem{Kolaj}{2015}{Kolaj:2015}
+Kolaj, W.  \harvardyearleft 2015\harvardyearright .
+\newblock {\em Design and Implementation of Application Supporting the Tuning
+  of PID Controller in Simatic S7 Devices}, PhD thesis, Warsaw University of
+  Technology, Warsaw.
+
+\harvarditem{O'Dwyer}{2006}{Odwyer:2006}
+O'Dwyer, A.  \harvardyearleft 2006\harvardyearright .
+\newblock Pi and pid controller tuning rules: an overview and personal
+  perspective, {\em Proceedings of Irish Signals and Systems Conference},
+  pp.~161--166.
+
+\harvarditem{O'Dwyer}{2009}{Odwyer:2009}
+O'Dwyer, A.  \harvardyearleft 2009\harvardyearright .
+\newblock {\em Handbook of PI and PID Controller Tuning Rules}, Imperial
+  College Press, London.
+
+\harvarditem{P.~Tatjewski}{2011}{Trybus:2011}
+P.~Tatjewski, L.~Trybus, M.~L. P.~M. Z.~S. A.~S.  \harvardyearleft
+  2011\harvardyearright .
+\newblock {\em Supervisory Control and Optimization, Modeling, Diagnostics and
+  Process Control. Implementation in the DiaSter System}, Springer, London.
+
+\harvarditem{R.~Haber}{1999}{Haber:1999}
+R.~Haber, L.~K.  \harvardyearleft 1999\harvardyearright .
+\newblock {\em Nonlinear System Identification : Input-output Modeling
+  Approach}, Kluwer Academic Publishers, Boston.
+
+\harvarditem{R.H.~Bishop}{2010}{Bishop:2010}
+R.H.~Bishop, R.~D.  \harvardyearleft 2010\harvardyearright .
+\newblock {\em Modern Control Systems (12th ed)}, Prentice Hall.
+
+\harvarditem{Strejc}{1959}{Strejc:1959}
+Strejc, V.  \harvardyearleft 1959\harvardyearright .
+\newblock Approximation aperiodisscher ubertragungscharakteristiken, {\em
+  Regelungstechnik} {\bf 7}(1):~124--128.
+\newblock DOI:.
+
+\harvarditem{Yu}{2006}{Yu:2006}
+Yu, C.  \harvardyearleft 2006\harvardyearright .
+\newblock {\em Autotuning of PID Controllers: A Relay Feedback Approach},
+  Springer, London.
+
 \end{thebibliography}

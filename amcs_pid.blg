@@ -1,19 +1,72 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: amcs_pid.aux
 The style file: dcu.bst
-Database file #1: amcs.bib
-Warning--I didn't find a database entry for "Ziegler:1942"
-Warning--I didn't find a database entry for "Cohen:1953"
-Warning--I didn't find a database entry for "Odwyer:2006"
-Warning--I didn't find a database entry for "Astrom:1995"
-Warning--I didn't find a database entry for "Yu:2006"
-Warning--I didn't find a database entry for "Trybus:2011"
-Warning--I didn't find a database entry for "Bishop:2010"
-Warning--I didn't find a database entry for "Mozaryn:2013"
-Warning--I didn't find a database entry for "Janiszowski:2002"
-Warning--I didn't find a database entry for "Odwyer:2009"
+Database file #1: amcs_pid.bib
+I was expecting a `,' or a `}'---line 91 of file amcs_pid.bib
+ :  JOURNAL 
+ :          = "Ingenier\'{i}a",
+I'm skipping whatever remains of this entry
+Warning--string name "j.~mozaryn" is undefined
+--line 149 of file amcs_pid.bib
+""" immediately follows a field name---line 149 of file amcs_pid.bib
+ :  author = j.~mozaryn, K.~Malinowski
+ :                                    ",
+I'm skipping whatever remains of this entry
 Warning--I didn't find a database entry for "Mozaryn:2016"
-Warning--I didn't find a database entry for "Haber:1999"
-Warning--I didn't find a database entry for "Strejc:1959"
-Warning--I didn't find a database entry for "Kolaj:2015"
 Warning--I didn't find a database entry for "Holejko:2010"
-(There were 15 warnings)
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1237 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1273 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1273 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1273 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1277 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1277 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1277 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1309 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1342 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1342 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1342 of file dcu.bst
+Warning--empty author in Mozaryn:2013
+Warning--empty booktitle in Mozaryn:2013
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
+while executing---line 1361 of file dcu.bst
+(There were 29 error messages)
