@@ -1,4 +1,5 @@
 \documentclass{amcs}
+\usepackage{verbatim}
 
 \title[Implemention and evaluation...]{Implementation and evaluation of fine-tuning methods of PI controller with PLC-PID Tuner}
 
@@ -55,505 +56,223 @@ These facts were the inspiration to create PLC-PIDTuner application which combin
 
 The article is organized as follows. In section II, the implementation details of PLC-PIDTuner are described. Then, in section III, the PLC controller tuning methodology is presented. Section IV describes results obtained during exemplary verification of developed application, based on a model of the 3rd order lag system with delay. Finally, in section V further development ideas are presented and in section VI concluding remarks are given..
 
-\section{Title page}
-The title area is created using the \verb+\maketitle+ command. Before invoking this command, the author has to declare all objects required to appear in the title area.
+\section{Implementation details}
+%
+PLC-PIDTuner is based on the open and free standards. Application allows tuning of \texttt{PID\_Compact} function block implemented in SIMATIC S7-1200 and S7-1500 controllers which are relatively new products in Siemens SIMATIC S7 products line \cite{Mozaryn:2016}. 
 
-\subsection{Manuscript title}
-\label{title}
-An example title is declared as follows:
+In PLC-PIDTuner there are implemented numerous methods, supporting different stages of the control system design: 
+%
 
-\medskip
-\noindent {\small \verb+\title{Numerical analysis of the algorithm}+}.
+\subsection{Procedure of the controller parameters tuning with PLC-PIDTuner}
+Presented application  divides controller tuning process into three main steps:
 
-\medskip\noindent
-The title is used to format the headers of odd pages. The header of each odd page is left justified and the page number right justified. In the case of a very long title, please use its short version, e.g., the first few words of the title and an ellipsis. The authors can put the short title of the paper in square brackets as an optional parameter of the \verb+\title+ command, e.g.,
+\begin{enumerate}
+	\item STEP 1: Process identification.
+	\item STEP 2: Calculation of the controller parameters.
+	\item STEP 3: Verification of the control system performance in time and frequency domains.
+\end{enumerate}
 
-\medskip
-\noindent {\small \verb+\title[Numerical analysis ...]{Numerical+} {\small \verb+analysis of the algorithm}+}.
+Thorough procedure divided into different sub-stages is presented in Fig. \ref{fig1}. Application contains simulation tools to verify the performance of the system in each sub-stage. Consequently, problems with the tuning process or decrease of an accuracy can be detected early and corrected. 
 
-\subsection{Authors' names and affiliations}
-The authors' names and affiliations are declared with two types of commands. By default, \verb+\author+ along with \verb+\address+ is used. Here, each author can be assigned at most two institutions:
+There is possibility to extend PLC-PIDTuner functionality by implementing identification methods, tuning methods and performance indices in standardized, separate DLL libraries. Such approach allows adapting the application to user needs based on expert knowledge of controlled industrial process. 
 
-\medskip
-\noindent {\small \verb+\author[ad1][ad2]{Author's NAME}+}.
+\subsection{Process identification}
+%
+The identification procedure provides mathematical model of process calculated on the basis of collected data of the control and process variables. It usually requires generation of proper excitation signal which affects industrial process and results in financial losses. Therefore, signal shape and parameters are often limited. PLC-PIDTuner allows coosing the suitable, least invasive excitation signal and set it's shape and parameters e.g. range of values or start/stop times of the step function.
 
-\medskip\noindent
-If an author is assigned one institution only, the second square brackets should be empty:
+In PLC-PIDTuner there are implemented following identification methods:
+\begin{enumerate}
+	\item secant method \cite{Haber:1999},
+	\item tangent method \cite{Haber:1999},
+	\item \textit{Strejc} method \cite{Strejc:1959},
+	\item extended least squares (ELS) method  \cite{Janiszowski:2002}.
+\end{enumerate}
 
-\medskip
-\noindent {\small \verb+\author[ad1][]{Author's NAME}+}.
+Each method can be invoked in the application, and identified model parameters are saved for further controller tuning and process simulation. Moreover, user is able to select and compare several models identified by means of different methods. 
 
-\medskip\noindent
-For each author, a separate \verb+\author+ command should be run, e.g.,
+Secant, tangent and \textit{Strejc} methods are based on step response and specified mathematical model of the plant. Therefore they are mainly used for rough approximation of plant dynamics, which is often insufficient for the purpose of computer simulation or controller tuning. Therefore, ELS method is implemented, which is more accurate and easy in numerical implementation. 
 
-\medskip
-\noindent {\small \verb+\author[ad1][]{First Author's NAME}+}
-\noindent {\small \verb+\author[ad2][]{Second Author's NAME}+}.
+PLC-PIDTuner allows user to compare determined model with the real plant by automatically calculating the response of the model. It allows verifying the quality of identified model using several indexes e.g. Integral Squared Error (ISE),  Integral Absolute Error (IAE), Integral Time-weighted Absolute Error (ITAE) and select the best of several models.
 
-\medskip\noindent
-\emph{Important!} The \verb+\author+ command permits to declare at most six authors.
-
-To define an author's affiliation, the \verb+\address+ command can be used:
-
-\medskip
-\noindent {\small \verb+\address[ad1]{First affiliation}+}.
-
-\medskip\noindent
-The option in square brackets is mandatory in order to assign an author to this institution. For each institution, a separate \verb+\address+ command should be run, e.g.,
-
-\medskip
-\noindent {\small \verb+\address[ad1]{First affiliation}+}
-\noindent {\small \verb+\address[ad2]{Second affiliation}+}.
-
-\medskip\noindent
-\emph{Important!} The \verb+address+ command permits to declare at most six institutions.
-
-Please note that the corresponding author for the paper must be marked as
-
-\medskip
-\noindent {\small \verb+\correspondingauthor{Author's NAME}+}.
-
-\medskip\noindent
-Another option is \verb+\authors+ along with  \verb+\addresses+. These may be used \textbf{only} for more than six authors or more than two institutions per author. Please note that here care must be taken while associating given symbols with names, and these must be Latin lower case characters. Here the corresponding author is marked with the \verb+\thanks+ command, as exemplified in the commented preamble passage above.
-
-Note that in all cases at least one institution must be declared for each author!
-
-\medskip\noindent
-\emph{Important!} The corresponding author should be chosen carefully---his or her task will include contact and cooperation with the Editorial Office, representing the co-authors and ensuring communication between all parties involved.
-
-\subsection{Abstract and keywords}
-The abstract text is encapsulated within the \verb+abstract+ environment:
-
-{\small \begin{verbatim}
-\begin{abstract}
-The paper deals with ...
-\end{abstract}.
-\end{verbatim}}
-
-\noindent The list of keywords is defined using the \verb+keywords+ environment:
-
-{\small \begin{verbatim}
-\begin{keywords}
-keyword1, keyword2, keyword3 ...
-\end{keywords}.
-\end{verbatim}}
-
-\subsection{Header of the title page}
-The header of the title page contains the name of the journal and the following information:
+\subsection{Tuning of the controller parameters}
+%
+Tuning of the controller parameters is performed on the basis of the process model identified in previous stage. There are impemented over 500 tuning methids, classified into groups based on the model type \cite{Odwyer:2009}. Furthermore, user has the possibility to select proper tuning method in terms of:
+%
 \begin{itemize}
-  \item
-    Publication year, declared with the \verb+\Year{}+ command;
-  \item
-    Journal volume number, declared with the \verb+\Vol{}+ command;
-  \item
-    Journal issue number, declared with the \verb+\No{}+ command;
-  \item
-    Paper final page numbering, declared with the \verb+\Startpage{}+ and \verb+Endpage{}+ commands, respectively;
-  \item
-    Digital Object Identifier number, declared with the \verb+DOI{}+ command.
+	\item control algorithm (P, PI, PD, PID),
+	\item type of tuning method \cite{Odwyer:2009},
+	\item minimization of specified quality index,
+	\item additional options e.g. required overshoot.
 \end{itemize}
-These commands are used solely by the editorial staff, so the authors are asked to ignore them.
 
-\section{Headers}
-The header of each even page includes names and initials as well as the page number. To declare the authors' names, please use the \verb+\Runauthors{}+ command placed in the document preamble (before \verb+maketitle+). For one author, give the first name initial and the full last name, e.g., for John Doe, the appropriate form is
+The set of the methods and calculated parameters, can be further examined using  built-in time and frequency domains analysis modules. It should be emphasized, that all simulations are carried out with real PLC controller that communicates with PLC-PIDTuner.
 
-\medskip\noindent {\small \verb+\Runauthors{J. Doe}+}.
-
-\medskip\noindent
-For two authors, use both authors' names, e.g.,
-
-\medskip\noindent {\small \verb+\Runauthors{J. Doe and M. John}+}.
-
-\medskip\noindent For more than two authors, use the first author's name and ``\emph{et al.}'', e.g.,
-
-\medskip\noindent {\small \verb+\Runauthors{J. Doe \it{et al.}}+}.
-
-\medskip The header of each odd page contains the title of the paper and the page number. To declare the header of each odd page, please use the {\small \verb+\title+} command (see Section~\ref{title}).
-
-\section{Sections}
-Sections are defined in a common way by the commands \verb+\section+, \verb+\subsection+, \verb+\subsubsection+ and \verb+\paragraph+. Arabic numbers are used for subsequent numbering. A paragraph is a section without a number. Below are examples of section formatting:
-
-\subsection{Secondary heading} Section text.
-\subsubsection{Tertiary heading} Section text.
-\paragraph{Paragraph} Section text.
-
-\section{Floating material}
+Such functionality enables to choose the set of controller parameters more precisely. By modifying controller parameters and subsequently verifying control system response, user can adjust its properties to meet the control objectives. Furthermore, build-in simulation helps to verify designed control system without the need of costly experiments performed with the real process.
 %
-\begin{figure}[!b]
- \centering
-  \includegraphics[width=0.45\textwidth]{fig1}
- \caption{Figure example \protect \cite{Haykin:99}.}
-  \label{fig1}
-\end{figure}
+\subsection{Analysis of the control system performance}
 %
-\begin{figure*}[!t]
- \centering
-  \includegraphics[width=0.40\textwidth]{fig2a}\hspace{0.5cm}
-  \includegraphics[width=0.45\textwidth]{fig2b}\\
-  (a)\hspace{8cm}(b)
-  \caption{Sample figure: the first graph (a), the second graph (b).}
-  \label{fig2}
-\end{figure*}
+After adjusting and downloading controller parameters, PLC-PIDTuner application allows user to verify operation of real control system. It is possible to plot and archive process variable values, change controller mode (Auto/Manual) or change set point value. Therefore, different quality indices in time domain can be calculated for the designed system. There were implemented 7 basic quality indices in time and frequency domain, described in detail in \cite{Kolaj:2015}.
+
+Build-in PLC-PIDTuner module for analysis in frequency domain  allows operator to automatically draw \textit{Bode} and \textit{Nyquist} plots using simulation of the identified model. PLC-PIDTuner determines stability margins of the designed control system by calculating phase ($\Delta \phi$) and gain ($\Delta L$) margins \cite{Bishop:2010} \cite{Holejko:2010}. These values characterize the robustness of the control system to changes of the process parameters caused e.g. by aging of the actuators. 
+
+On the basis of collected data PLC-PIDTuner automatically calculates values of selected quality indexes. It allows user to rate real control systems operation in terms of certain properties. If real control system does not meet the requirements, the steps of controller parameters  calculation or process mathematical model identification should be repeated.
+
+\subsubsection{Time domain analisys}
 %
-\subsection{Figures}
-Figures are defined in a standard manner, e.g.,
-{\small \begin{verbatim}
-\begin{figure}[!b]
- \centering
- \includegraphics[width=0.45\textwidth]
- {fig1}
- \caption{Figure example.}
- \label{fig1}
-\end{figure}.
-\end{verbatim}}
-\noindent They should be centred and placed at the top or bottom of a page if possible, as close as possible to the first reference to them. Please avoid middle in-text placement (option \verb+h+), and do not introduce frames around the figures. To use the \verb+\includegraphics+ command, the \verb+graphicx+ package has to be loaded first. The caption of a figure is placed below the figure to which it refers and should be ended with a full stop. In the case of multiple-part figures, enumerate each piece as (a), (b), etc., including necessary descriptions in the main caption of the figure. Use the \verb+caption+ command with the \verb+caption2+ package to format figure captions. Make sure you always employ \LaTeX commands for figure captions and numbering instead of incorporating those into the original graphics.
+The quality of the control system was analyzed in the time domain using following indexes: 
+\begin{itemize}
+	\item Maximum error 
+	\begin{equation}
+	e_{\text{sp}\max}=\max_{k}[e_{\text{sp}}(k)]
+	\end{equation}\label{eq22}
+	\item Overshoot 
+	\begin{equation}
+	\gamma=\left|\dfrac{e_2}{e_1}\right|100\%
+	\end{equation}\label{eq24}
+	where $e_1$ and $e_2$ are the first 2 consecutive biggest errors with opposite signs, assuming as the zero level (baseline) the steady state value of the output signal $y(t)$ after transient response.
+	\item Transient response time $T_{R}$ - it is the time between the moment of change of the set point $y_{\text{sp}}(k)$ , or introduction of disturbances $d(k)$ and the moment when  error (\ref{eq22}) reaches a fixed value inside a boundary $|0.05 e_{\text{sp}\max}(k)|$. 
+	\item Integral Squared Error 
+	\begin{equation}
+	\text{ISE}_{\text{sp}}=\sum_{k}[e_{\text{sp}}(k)]^{2} 
+	\end{equation}\label{eq25}
+	\item Integral of Absolute Value of Error 
+	\begin{equation}
+	\text{IAE}_{\text{sp}}=\sum_{k}|e_{\text{sp}}(k)| 
+	\end{equation}\label{eq26}
+\end{itemize}
 
-Sometimes figures are too wide to fit in a single column. Then, a double-column figure environment declared with the \verb+figure*+ environment can be used:
+\subsubsection{Frequency domain analysis}
 %
-{\small \begin{verbatim}
-\begin{figure*}[!t]
- \centering
- \includegraphics[width=0.405\textwidth]
- {fig2a}\hspace{0.5cm}
- \includegraphics[width=0.45\textwidth]
- {fig2b}\\
- (a)\hspace{7cm}(b)
- \caption{Sample figure: the first
- graph (a), the second graph (b).}
- \label{fig2}
-\end{figure*}.
-\end{verbatim}}
+In the next step, based on the simulation with model characterized by lowest ISE (ELS, rank 3), stability margins of the designed control systems were calculated (see Tab. \ref{tab3}). Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the parameters of the object and external distortions. Knowledge of the stability margins values allow also to adjust controller parameters in order to improve quality in the time domain \cite{Mozaryn:2013}.   
 
-When referring to figures, the abbreviation ``Fig.'' should be used. It is also advisable to clearly name the graphic files and their labels, e.g., \emph{fig1, fig2a, fig2b}, etc.
-\subsection{Tables}
+\subsection{Fine-tuning of PID controller}
+
+Desired control system, was characterized by following properties:
+
+\begin{itemize}
+\item Property 1: Short   of the step response.
+\item Property 2: Short   after abrupt occurrence of disturbances.
+\item Property 3: Output signal should have no visible high-frequency oscillations.
+\end{itemize}
+
+The overall performance of the examined control system with controller pa-rameters set according to A-R rules is good (Table 1). However, because of the long transient response to disturbances, there was proposed method of parameters modification (fine-tuning) to reduce it.
+
+To specify the robustness of the system there was performed analysis in the frequency domain. There were calculated gain margin   and phase margin  of the control system [10]. Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the pa-rameters of the object and external distortions. If   and   decrease, the control system has transient oscillatory character and the overshoot, but also has short transient response time. For further modifications there was chosen only the integration time  . In case of the FOLPD plant model (1) index   decrease with reduction of parameter [11]. 
+
+In the proposed heuristic iterative modification procedure parameter   was reduced in order to comply with the following assumptions:
+
+Assumption 1: Step response overshoot should be less than 5 \%.
+
+Assumption 2: The change of   should be less than 25\% of the original value and   should be less than 25\% of the original value. 
+
+Proposed PID fine-tuning iterative procedure can be presented in the form of algorithm as follows:
+
+\begin{algorithm}[!h]
+	\caption{Fine-tuning algorithm.}
+	\label{a:alg1}
+	\textbf{Step 1.} Set  . Enter the pre-tuned set of PID settings, perform the step re-sponse experiment. Calculate and save values:  ,  ,  , and  .
+	
+	\smallskip
+	\textbf{Step 2.} Set   ,  and   .
+	
+	\smallskip
+	\textbf{Step 3.} Perform step response experiment, calculate values   ,  ,  .
+	
+	\smallskip
+	\textbf{Step 4.} If  , go to step 5, else go to step 6.
+	
+	\smallskip
+	\textbf{Step 5.} If   and   go to step 2, else go to step 6.
+	
+	\smallskip
+	\textbf{Step 6.} Set  .
+	
+	\smallskip
+	\textbf{Step 7.} Stop the algorithm.
+	
+\end{algorithm}
+
+\begin{comment}
+Nastawy regulatora PID wyznaczone różnymi metodami opisanymi w literaturze często nie zawsze zapewniają wynikiów regulacji satysfakcjonujących satysfakcjonujące projek-tanta. Sposobem na poprawę jakości regulacji może być opisana w [11] iteracyjna metoda modyfikacji nastaw regulatora, która umożliwia polepszenie otrzymanych wskaźników regulacji, a w szczególności:
+1.	skrócenie czasu regulacji na wymuszenie skokowe,
+2.	skrócenie czasu regulacji przy wystąpieniu zakłócenia,
+3.	brak wysokich częstotliwości w sygnale wyjściowym.
+Iteracyjna metoda dostrajania regulatora (ang. fine–tuning -  FT) zaimplementowana w aplikacji PLC-PID Tuner wymaga, aby regulator był już zainstalowany w układzie oraz po-siadał wstępnie dobrane nastawy. Następnie wybierana jest nastawa do modyfikacji i rejestrowana jest odpowiedź układu na wymuszenie skokowe. Kolejnym krokiem jest obliczenie przeregulowania, zapasu modułu  i fazy. Założenia opisywanej metody są następujące [5]:
+1.	przeregulowanie nie może przekroczyć 5\%,
+2.	zapas modułu powinien być większy od 75\% wartości początkowej,
+3.	zapas fazy powinien być większy od 75\% wartości początkowej.
+
+Dokładny schemat postępowania przedstawiony jest w postaci algorytmów A1 i A2.
+Algorytm FT - A1 (iteracyjna modyfikacja wzmocnienia regulatora):
+1.	Ustawić krok iteracji k = 0. Ustawić w regulatorze początkowo dobrane wartości na-staw: kp0, Ti0 i Td0. Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrówwskaźników: przeregulowanie (κ), zapas modułu (M0) oraz zapas fazy (φ0). Przyjąć kp,0 = kp0.
+2.	Ustawić k = k + 1, a następnie kp,k = 1,05 • kp,k-1.
+3.	Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrów: κ, Mk oraz φk.
+4.	Jeżeli κ<5\% przejść do kroku 5 – ego. W innym przypadku przejść do kroku 6
+5.	Jeżeli Mk < (1 ± 0,3) M0 i φk < (1 ± 0,3)φ0, przejść do kroku 2. W innym przypadku kontynuować do kroku 6.
+6.	Ustawić lub kp = kp,k-1.
+7.	Koniec algorytmu.
+Algorytm FT - A2 (iteracyjna modyfikacja czasu całkowania regulatora)::
+1.	Ustawić k = 0. Ustawić w regulatorze początkowo dobrane wartości nastaw: kp0, Ti0 i Td0. Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pa-mięci wartości parametrówwskaźnikow: przeregulowanie (κ), zapas modułu (M0) oraz zapas fazy (φ0). Przyjąć Ti,0 = Ti0.
+2.	Ustawić k = k + 1, a następnie Ti,k = 0,95 • Ti,k-1.
+3.	Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrówwskaźników: κ, Mk oraz φk.
+4.	Jeżeli κ<5\% przejść do kroku 5 – ego. W innym przypadku przejść do kroku 6.
+5.	Jeżeli Mk < (1 ± 0,3) M0 i φk < (1 ± 0,3)φ0, przejść do kroku 2. W innym przypadku kontynuować do kroku 6.
+6.	Ustawić Ti = Ti,k-1.
+7.	Koniec algorytmu.
+5.4.1.	Iteracyjne dostrajanie w programie PLC-PID Tuner
+Program PLC PID Tuner umożliwia przeprowadzenie procedury Fine – Tuningu  w trybie offline. Wykorzystany jest zaimplementowany w aplikacji symulator układu regulacji [9]. W programie zaimplementowano oba opisane algorytmy. Użytkownik za pomocą kontro-lek (Rysunek 5.11, Rysunek 5.12) wybiera rodzaj algorytmu. System sprawdza czy są speł-nione wymagania do przeprowadzenia procedury FT:
+•	sprawdzane jest czy obiekt regulacji istnieje,
+•	sprawdzane jest czy regulator istnieje,
+•	sprawdzany jest tryb pracy regulatora – w algorytmie A1, tryb pracy regulatora może być dowolny, zaś przy algorytmie A2 dopuszczalny tryb pracy to PI lub PID,
+Jeśli wymagania są spełnione to zapisywane są parametry istniejącego układu regulacji: kp0, Ti0, Td0, κ, M0 i φ0. Następnie za pomocą zaimplementowanego w programie symulatora układu regulacji (rozdział 3) rejestrowana jest odpowiedź układu regulacji na wymuszenie skokowe. Kolejną czynnością jest obliczenie nowych wartości κ, Mk oraz φk. Jeśli wymagania opisane w A1 lub A2 są spełnione algorytm jest kontynuowany. Po zakończeniu FT użytkownik jest informowany o wyniku, a nowe nastawy są wpisywane do regulatora w pro-jekcie. Naciśnięcie przycisku Fine Tuning na Rysunek 5.12 Okno Fine Tuningu wywołuje metodę FineTuning, która sprawdza czy spełnione są wymagania do przeprowadzenia FT i wyświetla nowe okno do wyboru nastawy, która ma być poddana modyfikacji.
+\end{comment}
+
+\section{Expemental verification}
+
+\subsection{Control system structure}
 %
-Tables should be centred, at the top or bottom of a page if possible, and as close as possible to the first reference to them. The caption of a table should be placed over the table to which it refers and should be ended with a full stop. For example, the code
-%
-{\small\begin{verbatim}
-\begin{table}[!b]
- \centering
- \caption{Table example.}
- \label{table1}
- \begin{tabular}{|c|c|c|}
-  \hline
-  Algorithm & Performance [\%]& Calc. time
-  [s]\\\hline\hline
-  gradient & 95 & 100\\
-  stochastic & 97 & 80\\
-  evolutionary & 99 & 500\\\hline
- \end{tabular}
-\end{table}
-\end{verbatim}}
-\noindent refers to Table~\ref{table1}. For long tables, please use the \verb+table*+ environment.
-%
-\begin{table}[!b]
- \centering
- \caption{Table example.}
- \label{table1}
- \begin{tabular}{|c|c|c|}
-   \hline
-   Algorithm & Performance [\%]& Calc. time [s]\\\hline\hline
-   gradient & 95 & 100\\
-   stochastic & 97 & 80\\
-   evolutionary & 99 & 500\\\hline
- \end{tabular}
-\end{table}
+The process was controlled in closed-loop control system, presented in Fig. 2.
 
-\section{Graphics}
-Graphics should be composed \textbf{in vector format as gray scale} encapsulated postscript (EPS) or portable document format (PDF) files. Vector images allow good reproduction of graphics both online and in print, are not affected by resizing and take up little space. Therefore, line drawings should be originally composed as vector graphics, while mixed/photographics images may be exported to the EPS/PDF format with the resolution of at least 300 dpi. Please note that we will not be able to drastically improve graphics that are originally of low quality, so the authors are expected to ensure the best possible graphical presentation of their results. (Blurred, pixelated or scanned images will not be accepted!)
-
-Any text used in the images should be converted to curves or composed using embedded PostScript Type 1 fonts---this will ensure correct displaying of the figures in the final PDF file. Please do NOT use the \verb+psfrag+ option in your graphics---instead, incorporate all descriptions into the actual image.
-
-\emph{Important!} As \emph{AMSC} is entirely a monochrome publication, the provided graphics must be in gray scale---any images submitted in colour will be converted to such. Consequently, no in-text references to colour in graphics are allowed. (If needed, readers may be provided with colour graphics via links or contact with the authors---a proper notification should be included in the paper.) Also, please make sure that any fine line drawings such as graphs are legible in gray scale---use fairly thick lines, contrasting shades of gray or symbols.
-
-Be aware that figures, along with abstracts, keywords and tables, often make a first impression about the entire paper, so please make them informative and clean.
-
-\section{Equations}
-Equations may be typeset with traditional commands such as \verb+\equation+, \verb+\eqnarray+, etc., but the use of the \verb+\amsmath+ and \verb+\amssymb+ packages is recommended. Each equation should be centred and numbered consecutively, starting from 1. Use arabic numbering in brackets, right justified. Please add (if appropriate) punctuation marks at the end of the formulae, e.g.,
-%
+In the control system (Fig. 2), an output of the process   is the liquid level in the tank Z1 (H1). It is compared with the desired output response (setpoint)   and an output error is given as:
 \begin{equation}
-  J=\sum_{i=1}^N(e_i-y_i^s)^2.
+e(t)=y(t)-w(t)
 \end{equation}
+The error (1) is used by the controller to adjust the control signal   which, through an actuator (pump) affects the regulated process. In the system there are disturbances   (leakage) which can be introduced, as it is described in chapter 2.
 
-\noindent \emph{Important!} Please avoid double-column equations.
+The control algorithm was implemented on a Siemens S7-1200 PLC controller. 
 
-\section{Theorems and other environments}
-The \verb+amcs+ document class offers a number of environments to declare theorems and related structures.
+\subsection{Identification of the control plant}
 
-\subsection{Theorems, corollaries, propositions and lemmas} The following piece of code:
+\subsection{Selection of PID controller parameters}
 
-{\small \begin{verbatim}
-\begin{theorem}{Reference}
- Theorem definition xxxxx xxxx xxx xxx xxx
- xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{theorem1}
-\end{theorem}
-\end{verbatim}}
-\noindent results in Theorem~\ref{theorem1}, where reference to a suitable work is given in the brackets.
+For the control of the process there was used the PID controller in the parallel form with filtered derivative part, described by the following equation [9]:
+(3)
+where    is proportional gain,   is integral time constant,   is derivative time constant and   is time constant of filter (  is chosen usually as 8÷10 [4]).
+The quality of the control system was analyzed in the time domain using fol-lowing indexes:
+Maximum error
+(4)
+Overshoot
+(5)
+where   and   are the first 2 consecutive biggest errors with opposite signs, as-suming steady state value of output   after transient response as the zero level (baseline).
+Transient response time  - it is the time between the moment of change of the set point  , or introduction of disturbances   , and the moment when the error   reaches a fixed value inside a boundary  .
+Integral Squared Error
+(6)
+%
+\subsection{Pre-tuning of PID controller}
+In [9] there are described 1731 different types of PID tuning rules, so the proper criteria should be used to choose the most suitable settings. Tuning rules selection (pre-tuning) criteria were as follows:
 
-\medskip
-\begin{theorem}{Werbos, 1974}
-Theorem definition xxxxx xxxx xxx xxx xxx
-xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{theorem1}
-\end{theorem}
+a) Type of a process (stationary or nonstationary): the examined process is stationary process.
+b) Model of the process: the equation (2) describes FOLPD model.
+c) PID controller structure: the controller structure is described by (3).
+d) The ratio of transport delay and the time constant of the process:
+.	(7)
+For the given model (2)  .
 
-\medskip\noindent
-When referencing is not needed, please leave the curly brackets empty, e.g.,
-{\small \begin{verbatim}
-\begin{theorem}{}
- Theorem definition xxxxx xxxx xxx xxx xxx
- xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{theorem2}
-\end{theorem}.
-\end{verbatim}}
+\subsection{Fine-tuning of PID controller}
 
-\noindent
-The result of the above is as follows:
+Obtained quality indices after the iterative modifications (Algroithm A1), are gathered in Table 2.
 
-\begin{theorem}{}
- Theorem definition xxxxx xxxx xxx xxx xxx
- xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{theorem2}
-\end{theorem}
-
-\medskip \noindent
-
-Instead of a reference, a name can be given to the theorem. In much the same way, \verb+lemma+, \verb+corollary+, \verb+statement+ and \verb+proposition+ environments are declared.
-
-\subsection{Proof environment}
-Proofs are handled by the environment
-{\small \begin{verbatim}
-\begin{proof}{Reference/Name}
- Proof of theorem xxx xxx xxx xxx xxx xx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx
-\end{proof},
-\end{verbatim}}
-
-\noindent which results in
-
-\begin{proof}{See Uci\'nski, 1999}
- Proof of theorem xxx xxx xxx xxx xxx xx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx,
-\end{proof}
-
-\medskip
-
-\noindent with an optional parameter for a reference or a name, which may be left empty if not needed. The Q.E.D. symbol {\footnotesize $\blacksquare$} is automatically placed at the end of each proof.
-
-\subsection{Example environment}
-Examples are declared by the environment
-{\small \begin{verbatim}
-\begin{example}[]{Stability}
- Let us consider an example ... xxx xxx
- xxx  xxx xxx  xx xx xxx xxx xxx xxx
- xxxx x xx  xx  xxxx xx xx xxx
-\end{example},
-\end{verbatim}}
-
-\noindent which results in
-
-\begin{example}[]{Stability}
- Let us consider an example ... xxx xxx
- xxx xxx xxx  xx xx xxx xxx xxx xxx xxxx
- x xx xx  xxxx xx xx xxx.
-\end{example}
-
-\medskip \noindent The symbol $\blacklozenge$ is automatically placed at the end of each example. If this sign is not required, please put the \texttt{nosign} option in the brackets, i.e.,
-
-{\small \begin{verbatim}
-\begin{example}[nosign]{Stability}
- Proof of theorem xxx xxx xxx xxx xxx xx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx
-\end{example}.
-\end{verbatim}}
-
-\subsection{Definitions, problems, remarks and others}
-
-The following piece of code:
-
-{\small \begin{verbatim}
-\begin{definition}{Definition name}
- Contents of definition xxxxx xxxx xxx xxx
- xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{definition1}
-\end{definition}
-\end{verbatim}}
-\noindent results in Definition~\ref{definition1}, with the name of the definition given in the brackets.
-
-\medskip
-\begin{definition}{Equivalence rule}
- Contents of definition xxxxx xxxx xxx xxx
- xxx xxx xxx xxx xx xx xxxx xxx xxxxx xxxx.
- \label{definition1}
-\end{definition}
-
-\medskip\noindent
-When the name is not needed, please leave the curly brackets empty, e.g.,
-
-{\small \begin{verbatim}
-\begin{definition}{}
- Let $x(t)$ be ...xxx xxx xxx xxx xxx xx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx
-\end{definition}.
-\end{verbatim}}
-
-\noindent Instead of a name, reference to a suitable work can be given in the brackets. In much the same way, \verb+remark+, \verb+observation+, \verb+assumption+, \verb+property+ and \verb+problem+ environments are declared.
-
-\section{Algorithms}
-The algorithms should be expressed using the \verb+algorithmic+ and \verb+algorithm+ environments provided by the \verb+algorithmic.sty+ and \verb+algorithm.sty+ packages, respectively. The \verb+algorithmic+ environment allows describing algorithms while the \verb+algorithm+ environment provides a float wrapper for defined algorithms described using the \verb+algorithmic+ one. The following piece of code:
-\begin{verbatim}
-\begin{algorithm}[!h]
-\caption{Selection of the point.}
-\begin{algorithmic}[1]
-\REQUIRE $d_1,d_2,\psi$
-\IF {$d_2 > \psi^2$}
-\STATE $a_1:=d_1, a_2:=\psi^2$
-\COMMENT{region I}
-\ELSIF {$d_1 \geqslant 2\psi$}
-\STATE $a_1:=2\psi$, $a_2:=\psi^2$
-\COMMENT{region II}
-\ENDIF
-\RETURN $a_1,a_2$
-\COMMENT{Returns coordinates}
-\end{algorithmic}
-\end{algorithm}
-\end{verbatim}
-gives the result portrayed below.
-\begin{algorithm}[!h]
-\caption{Selection of the stationary point.}
-\label{a:alg}
-\begin{algorithmic}[1]
-\REQUIRE $d_1,d_2,\psi$
-\IF {$d_2 > \psi^2$}
-\STATE $a_1:=d_1, a_2:=\psi^2$
-\COMMENT{region I}
-\ELSIF {$d_1 \geqslant 2\psi$}
-\STATE $a_1:=2\psi$, $a_2:=\psi^2$
-\COMMENT{region II}
-\ENDIF
-\RETURN $a_1,a_2$
-\COMMENT{Returns coordinates}
-\end{algorithmic}
-\end{algorithm}
-
-Algorithms expressed in a step-by-step manner can be defined in the following way:
-\begin{verbatim}
-\begin{algorithm}[!h]
-\caption{Robust model designing.}
-\label{a:alg1}
-\textbf{Step 1.} Compute the residual
-$r=y - y_m$.
-
-\smallskip
-\textbf{Step 2.} Collect the data
-$\{u_i,r_i\}_{i=1}^{N}$ and identify
-an error model using these data.
-
-\smallskip
-\textbf{Step 3.} Construct a robust
-model.
-\end{algorithm},
-\end{verbatim}
-which gives Algorithm 2.
-\begin{algorithm}[!h]
-\caption{Robust model designing.}
-\label{a:alg1}
-\textbf{Step 1.} Compute the residual $r=y - y_m$.
-
-\smallskip
-\textbf{Step 2.} Collect the data $\{u_i,r_i\}_{i=1}^{N}$ and identify an error model using these data.
-
-\smallskip
-\textbf{Step 3.} Construct a robust model.
-\end{algorithm}
-
-Algorithms formatted in a different manner cannot be accepted.
-
-\section{Acknowledgments}
-The acknowledgment section is created using the \verb+acknowledgment+ environment:
-{\small \begin{verbatim}
-\begin{acknowledgment}
- The authors wish to thank ... xx xxx xx x
- xx xx xxx xxx xxx xxx xxxxx xx xx xxxx xx
-\end{acknowledgment}.
-\end{verbatim}}
-Acknowledgments and other unnumbered sections have the title centered.
-
-Please use this section to acknowledge all and any kinds of support your research has obtained.
-
-\section{References}
-Authors should provide complete, correct and properly structured references. All data in a reference must be correct and exhaustive. Please cite the full title of a journal or the full name of a conference, not an abbreviation (e.g., not \emph{IEEE Tran.~N.~Networks} but \emph{IEEE Transactions on Neural Networks}, not \emph{ACC 2007} but \emph{American Control Conference 2007}). Journal publications should contain volume and issue numbers as well as the page range. Book chapters must be accompanied with the book title and editors, publisher and publication city, as well as page numbers. Conference publications should include the conference location (city and country) and page numbers. Alternatively, if published in books, they should be structured as book chapter entries described above. We advise you to insert DOIs where applicable for unambiguous referencing. Note, also, that the proper form of records is particularly important for cross-referencing in electronic databases!
-
-To prepare the bibliography using Bib\TeX, the \verb+harvard+ style with the options \verb+dcucite+ and \verb+abbr+ as well as the \verb+dcu+ bibliography style should be used. It is an author--date type of citations and offers the following useful options employed in our publications:
-\begin{itemize}
-  \item \verb+\cite{Reference name}+ for parenthetical references, i.e., when they constitute extraneous information:\\[+1ex]
-        As has been observed \cite{Haykin:99,Reinelt:02,Maryak:2001} ...
-  \item \verb+\citeasnoun{Reference name}+ for textual references, i.e., when they constitute a logical part of the sentence:\\[+1ex]
-        As observed by \citeasnoun{Patan:08}, \citeasnoun{Ucinski:99} and \citeasnoun{Park:85} ...
-  \item \verb+\citeaffixed{Reference name}{affix}+ for parenthetical references containing additional introductory elements:\\[+1ex]
-        As has been observed \citeaffixed{Werb:74,Patan:04,dam:02}{e.g.,} ...
-  \item \verb+\citeyear{Reference name}+ for multiple references to works by the same author:\\[+1ex]
-        As observed by Uci\'nski \citeyear{Ucinski:99,Ucinski:05a,Ucinski:05b} ...
-\end{itemize}
-
-The list of references should be ordered alphabetically according to the first author's last name. Publications by the same author(s) should be listed chronologically starting with the least recent item. Works by the same author(s) published in the same year are differentiated with \emph{a,b,} etc., as in the example above.
-
-\section{Biographies}
-The authors of accepted papers are expected to provide biographical notes, concisely describing their professional standing, achievements and interests.
-
-Biographies are created using the \texttt{biography}
-environment, which supports an optional argument for
-the inclusion of a photo:
-{\small\begin{verbatim}
-\begin{biography}[photo.eps]{Author's Name}
-.
-.
-.
-\end{biography}.
-\end{verbatim}}
-
-The photo area is 2.5 cm wide and 3 cm long. The author's name is a mandatory parameter and it is written in bold face. The biography should consist of one paragraph not longer than 100 words, while photo images should be prepared with a 300 dpi resolution, as gray scale EPS or PDF files. If a photo is not available, the \verb+biography+ environment without the optional argument should be used as follows:
-{\small\begin{verbatim}
-\begin{biography}[]{Author's Name}
-.
-.
-.
-\end{biography}.
-\end{verbatim}}
-
-It should be stressed that a biography of each author of the paper is required, preferably with a photo.
-
-\section{Appendices}
-
-The \verb+appendix+ environment is used to start a single appendix:
-{\small \begin{verbatim}
-\begin{appendix}{}
- The proof of theorem ....xx xxx xxx xxx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx
-\end{appendix}.
-\end{verbatim}}
-The authors can introduce more than one appendix. In this case they should employ the \verb+appendices+ environment, which uses capital letters as the numbering convention (e.g., \textbf{Appendix A}, \textbf{Appendix B}, etc.). When the title of the appendix is required, it is placed in the brackets:
-{\small \begin{verbatim}
-\begin{appendix}{Title here}
- The proof of theorem ....xx xxx xxx xxx xx
- xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx
-\end{appendix}.
-\end{verbatim}}
-
-Please note that appendices use their own numbering for sections, equations, figures, lemmas, etc., and they are placed after biographies.
-
-\section{Paper notices}
-The paper notices section includes information about the following:
-\begin{itemize}
-  \item
-    Date of paper submission, declared with the \verb+\Received{}+ command,
-  \item
-    Date of paper revision, declared with the \verb+\Revised{}+ command,
-  \item
-    Date of paper second revision, declared with the \verb+\Rerevised{}+ command.
-\end{itemize}
-These commands are used solely by the editorial staff, so the authors are asked to ignore them.
+\section{Conclusions}
 
 \begin{acknowledgment}
 Please acknowledge here all and any support, institutional or individual, which you have received for your work.
@@ -561,68 +280,13 @@ Please acknowledge here all and any support, institutional or individual, which 
 
 \bibliography{amcs}
 
-\begin{biography}[photo]{Author with a photo.}Place a brief biography here xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx.
+\begin{biography}[photo]{Jakub Mo\.{z}aryn.}Place a brief biography here xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx.
 \end{biography}
 
-\begin{biography}[]{Author without a photo.}Place a brief biography here xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx.
+\begin{biography}[]{Damian Suski.}Place a brief biography here xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx.
 \end{biography}
 
-%\begin{appendix}{}
-% The proof of Theorem 1 xx xxx xxx xxx xx xx xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx xx xxx xxx xxx xx xx  xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx.
-%\begin{lemma}{}
-%\end{lemma}
-%\end{appendix}
-
-\begin{appendices}{Convergence analysis}
-\section{Section name}
-\subsection{Subsection name}The convergence of the algorithm ... xx xx  xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx  xx xxx xxx xxx xx xx  xxx xxx xxx xxx xxxxx  xx xx xxxx xx xx xxx.
-\begin{equation}
-  a=v+m,
-\end{equation}
-\begin{equation}
-  b=m+n.
-\end{equation}
-\begin{figure}[!h]
-  \includegraphics[width=0.40\textwidth]{figA1}
-  \caption{Appendix figure.}
-\end{figure}
-\begin{table}[!h]
- \caption{Appendix table.}
- \begin{tabular}{|c|c|c|}
-   \hline
-   Algorithm & Performance [\%]& Calc. time [s]\\\hline\hline
-   gradient & 95 & 100\\
-   stochastic & 97 & 80\\
-   evolutionary & 99 & 500\\\hline
- \end{tabular}
-\end{table}
-
-\begin{theorem}{}
-\end{theorem}
-
-\begin{lemma}{}
-\end{lemma}
-
-\begin{lemma}{}
-\end{lemma}
-
-\begin{lemma}{}
-\end{lemma}
-\end{appendices}
-
-\begin{appendices}{}
-
-\noindent This is another appendix,
-
-\begin{equation}
-  c=z+l.
-\end{equation}
-
-\begin{lemma}{Equivalence} Let us begin by ... xx xx  xxx xxx xxx xxx xxxxx xx xx xxxx xx xx xxx  xx xxx xxx xxx xx xx  xxx xxx xxx xxx xxxxx  xx xx xxxx xx xx xxx.
-\end{lemma}
-
-\end{appendices}
-
-\makeinfo
+\begin{biography}[]{Arkadiusz Winnicki.}Place a brief biography here xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx xxx xxx xxxxx xx xxx xxx xxx xx xxxx xx xxxxxxx xxx xxx xx xx xx xxxxx xx xxxx.
+\end{biography}
 
 \end{document}
