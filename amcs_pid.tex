@@ -3,12 +3,12 @@
 
 \title[Implemention and evaluation...]{Implementation and evaluation of fine-tuning methods of PI controller with PLC-PID Tuner}
 
-\author[ad1][ad2]{Jakub MOŻARYN}
+\author[ad1][]{Jakub MO\.{Z}ARYN}
 \author[ad1][]{Damian SUSKI}
-\author[ad1][ad2]{Arkadiusz WINNICKI}
+\author[ad1][]{Arkadiusz WINNICKI}
 
 
-\correspondingauthor{Second AUTHOR}
+\correspondingauthor{First AUTHOR}
 
 \address[ad1]{Institute of Automatic Control and Robotics\\ Warsaw University of Technology, Address ul. Sw. A. Boboli 8, 02-525, Warsaw, Poland\\ e-mail: \url{j.mozaryn@mchtr.pw.edu.pl}}
 
@@ -62,7 +62,30 @@ PLC-PIDTuner is based on the open and free standards. Application allows tuning 
 
 In PLC-PIDTuner there are implemented numerous methods, supporting different stages of the control system design: 
 %
+\subsection{PID controller structure}
 
+PLC-PIDTuner application considers PID algorithm implemented as follows:
+
+\begin{equation}\label{eq20}
+y(s)=K_{p}\left[1+\frac{1}{T_{i}s}+\frac{T_{d}s}{\frac{T_{d}}{k_{d}}s+1}\right]e(s)
+\end{equation}
+
+where: $K_{p}, T_{d}, T_{i}$ are proportional, derivative and integral gains, $k_{d}$ dynamic gain (during tests $k_{d}=6$). 
+
+In \texttt{PID$\_$Compact} function block in S7-1200 PLC there is implemented PID controller in 2-DOF form \cite{Siemens:2013}:
+%
+\begin{equation}\label{eq21}
+\begin{array}{ll}
+y(s)=&K_{p}\left[(by_{\text{sp}}(s)-y(s))+\frac{1}{T_{i}\cdot s}(e_{\text{sp}}(s))+\right.\\
+&\left.+\frac{T_{d}s}{aT_{d}s+1}(cy_{\text{sp}}(s)-y(s))\right]
+\end{array}
+\end{equation}
+Where $a$, $b$, $c$, are scaling parameters, and \begin{equation}
+e_{\text(sp)}=y_{\text{sp}}-y(k)
+\end{equation}\label{eq23}
+
+Equation (\ref{eq21}) can be converted into (\ref{eq20}) by setting parameters $a=1$, $b=1$, $c=1$. 
+%
 \subsection{Procedure of the controller parameters tuning with PLC-PIDTuner}
 Presented application  divides controller tuning process into three main steps:
 
@@ -73,6 +96,14 @@ Presented application  divides controller tuning process into three main steps:
 \end{enumerate}
 
 Thorough procedure divided into different sub-stages is presented in Fig. \ref{fig1}. Application contains simulation tools to verify the performance of the system in each sub-stage. Consequently, problems with the tuning process or decrease of an accuracy can be detected early and corrected. 
+
+\begin{figure*}[!t]
+	\centering
+	\includegraphics[width=1\textwidth]
+	{Figure1}
+	\caption{Procedure of PLC tuning process using PLC-PIDTuner.}
+	\label{fig1}
+\end{figure*}.
 
 There is possibility to extend PLC-PIDTuner functionality by implementing identification methods, tuning methods and performance indices in standardized, separate DLL libraries. Such approach allows adapting the application to user needs based on expert knowledge of controlled industrial process. 
 
@@ -85,18 +116,18 @@ In PLC-PIDTuner there are implemented following identification methods:
 	\item secant method \cite{Haber:1999},
 	\item tangent method \cite{Haber:1999},
 	\item \textit{Strejc} method \cite{Strejc:1959},
-	\item extended least squares (ELS) method  \cite{Janiszowski:2002}.
+	\item extended least squares (ELS) method  \cite{Mozaryn:2016}.
 \end{enumerate}
 
 Each method can be invoked in the application, and identified model parameters are saved for further controller tuning and process simulation. Moreover, user is able to select and compare several models identified by means of different methods. 
 
-Secant, tangent and \textit{Strejc} methods are based on step response and specified mathematical model of the plant. Therefore they are mainly used for rough approximation of plant dynamics, which is often insufficient for the purpose of computer simulation or controller tuning. Therefore, ELS method is implemented, which is more accurate and easy in numerical implementation. 
+Secant, tangent and \textit{Strejc} methods are based on step response and specified mathematical model of the plant. Therefore they are mainly used for rough approximation of plant dynamics, which is often insufficient for the purpose of computer simulation or controller tuning. Therefore, ELS method is implemented, which is more accurate and easy in numerical implementation \cite{Mozaryn:2016}. 
 
 PLC-PIDTuner allows user to compare determined model with the real plant by automatically calculating the response of the model. It allows verifying the quality of identified model using several indexes e.g. Integral Squared Error (ISE),  Integral Absolute Error (IAE), Integral Time-weighted Absolute Error (ITAE) and select the best of several models.
 
 \subsection{Tuning of the controller parameters}
 %
-Tuning of the controller parameters is performed on the basis of the process model identified in previous stage. There are impemented over 500 tuning methids, classified into groups based on the model type \cite{Odwyer:2009}. Furthermore, user has the possibility to select proper tuning method in terms of:
+Tuning of the controller parameters is performed on the basis of the process model identified in previous stage. There are impemented over 750 tuning methods, classified into groups based on the model type \cite{Odwyer:2009}. Furthermore, user has the possibility to select proper tuning method in terms of:
 %
 \begin{itemize}
 	\item control algorithm (P, PI, PD, PID),
@@ -113,10 +144,10 @@ Such functionality enables to choose the set of controller parameters more preci
 %
 After adjusting and downloading controller parameters, PLC-PIDTuner application allows user to verify operation of real control system. It is possible to plot and archive process variable values, change controller mode (Auto/Manual) or change set point value. Therefore, different quality indices in time domain can be calculated for the designed system. There were implemented 7 basic quality indices in time and frequency domain, described in detail in \cite{Kolaj:2015}.
 
-Build-in PLC-PIDTuner module for analysis in frequency domain  allows operator to automatically draw \textit{Bode} and \textit{Nyquist} plots using simulation of the identified model. PLC-PIDTuner determines stability margins of the designed control system by calculating phase ($\Delta \phi$) and gain ($\Delta L$) margins \cite{Bishop:2010} \cite{Holejko:2010}. These values characterize the robustness of the control system to changes of the process parameters caused e.g. by aging of the actuators. 
+Build-in PLC-PIDTuner module for analysis in frequency domain  allows operator to automatically draw \textit{Bode} and \textit{Nyquist} plots using simulation of the identified model. PLC-PIDTuner determines stability margins of the designed control system by calculating phase ($\Delta \phi$) and gain ($\Delta L$) margins \cite{Bishop:2010} \cite{Holejko:2012}. These values characterize the robustness of the control system to changes of the process parameters caused e.g. by aging of the actuators. 
 
 On the basis of collected data PLC-PIDTuner automatically calculates values of selected quality indexes. It allows user to rate real control systems operation in terms of certain properties. If real control system does not meet the requirements, the steps of controller parameters  calculation or process mathematical model identification should be repeated.
-
+%
 \subsubsection{Time domain analisys}
 %
 The quality of the control system was analyzed in the time domain using following indexes: 
@@ -130,7 +161,7 @@ The quality of the control system was analyzed in the time domain using followin
 	\gamma=\left|\dfrac{e_2}{e_1}\right|100\%
 	\end{equation}\label{eq24}
 	where $e_1$ and $e_2$ are the first 2 consecutive biggest errors with opposite signs, assuming as the zero level (baseline) the steady state value of the output signal $y(t)$ after transient response.
-	\item Transient response time $T_{R}$ - it is the time between the moment of change of the set point $y_{\text{sp}}(k)$ , or introduction of disturbances $d(k)$ and the moment when  error (\ref{eq22}) reaches a fixed value inside a boundary $|0.05 e_{\text{sp}\max}(k)|$. 
+	\item Transient response time $T_{R}$ - it is the time between the moment of change of the set point $y_{\text{sp}}(k)$, or introduction of disturbances $d(k)$ and the moment when error (\ref{eq22}) reaches a fixed value inside a boundary $|0.05 e_{\text{sp}\max}(k)|$. 
 	\item Integral Squared Error 
 	\begin{equation}
 	\text{ISE}_{\text{sp}}=\sum_{k}[e_{\text{sp}}(k)]^{2} 
@@ -143,89 +174,75 @@ The quality of the control system was analyzed in the time domain using followin
 
 \subsubsection{Frequency domain analysis}
 %
-In the next step, based on the simulation with model characterized by lowest ISE (ELS, rank 3), stability margins of the designed control systems were calculated (see Tab. \ref{tab3}). Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the parameters of the object and external distortions. Knowledge of the stability margins values allow also to adjust controller parameters in order to improve quality in the time domain \cite{Mozaryn:2013}.   
-
-\subsection{Fine-tuning of PID controller}
-
+In the next step, based on the simulation with model characterized by lowest indices, stability margins of the designed control systems are calculated. Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the parameters of the object and external distortions. Knowledge of the stability margins values allow also to adjust controller parameters in order to improve quality in the time domain \cite{Mozaryn:2013}.   
+%
+\section{Fine-tuning of PID controller}
+%
 Desired control system, was characterized by following properties:
 
 \begin{itemize}
-\item Property 1: Short   of the step response.
-\item Property 2: Short   after abrupt occurrence of disturbances.
-\item Property 3: Output signal should have no visible high-frequency oscillations.
+\item \textbf{Property 1:} Short $T_{R}$ of the step response.
+\item \textbf{Property 2:} Short $T_{R}$  after abrupt occurrence of disturbances.
+\item \textbf{Property 3:} Output signal should have no visible high-frequency oscillations.
 \end{itemize}
 
-The overall performance of the examined control system with controller pa-rameters set according to A-R rules is good (Table 1). However, because of the long transient response to disturbances, there was proposed method of parameters modification (fine-tuning) to reduce it.
+To specify the robustness of the system there should be performed analysis in the frequency domain. In PLC-PID Tuner are calculated gain margin and phase margin of the control system \cite{Mozaryn:2016}. Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the pa-rameters of the object and external distortions. If $\Delta M$  and $\Delta \phi$ decrease, the control system has transient oscillatory character and the overshoot, but also has short transient response time. 
 
-To specify the robustness of the system there was performed analysis in the frequency domain. There were calculated gain margin   and phase margin  of the control system [10]. Gain margin determines how much the magnitude of the control system should increase, to make it unstable. Control systems with sufficiently large gain margin and phase margin are robust to changes in the pa-rameters of the object and external distortions. If   and   decrease, the control system has transient oscillatory character and the overshoot, but also has short transient response time. For further modifications there was chosen only the integration time  . In case of the FOLPD plant model (1) index   decrease with reduction of parameter [11]. 
+In the proposed heuristic iterative modification procedures we propose to reduced chosen controller settings in order to comply with the following assumptions:
 
-In the proposed heuristic iterative modification procedure parameter   was reduced in order to comply with the following assumptions:
+\textbf{Assumption 1:} Step response overshoot should be less than 5 \%.
 
-Assumption 1: Step response overshoot should be less than 5 \%.
-
-Assumption 2: The change of   should be less than 25\% of the original value and   should be less than 25\% of the original value. 
+\textbf{Assumption 2:} The change of $\Delta M$  should be less than 25\% of the original value and $\Delta \phi$ should be less than 25\% of the original value. 
 
 Proposed PID fine-tuning iterative procedure can be presented in the form of algorithm as follows:
 
 \begin{algorithm}[!h]
-	\caption{Fine-tuning algorithm.}
+	\caption{FT1 - Iterative modification of the proportional gain}
 	\label{a:alg1}
-	\textbf{Step 1.} Set  . Enter the pre-tuned set of PID settings, perform the step re-sponse experiment. Calculate and save values:  ,  ,  , and  .
+	\textbf{Step 1.} Set the iteration step $k=0$ . Enter the pre-tuned set of PID settings: $k_{p0}$, $T_{I0}$, $T_{D0}$, perform the step response experiment. Calculate and save values: $\gamma_{0}$, $\Delta M_{0}$, and $\Delta \phi_{0}$. Set $k_{p,0}=k_{p0}$. If $\gamma_{0}<5\%$ go to step 2, else go to step 6. 
 	
 	\smallskip
-	\textbf{Step 2.} Set   ,  and   .
+	\textbf{Step 2.} Set $k=k+1$, and $k_{p,k}=1,05k_{p,k-1}$  .
 	
 	\smallskip
-	\textbf{Step 3.} Perform step response experiment, calculate values   ,  ,  .
+	\textbf{Step 3.} Perform step response experiment, calculate values $\gamma_{k}$, $\Delta M_{k}$, and $\Delta \phi_{k}$.
 	
 	\smallskip
-	\textbf{Step 4.} If  , go to step 5, else go to step 6.
+	\textbf{Step 4.} If $\gamma_{k}<5\%$, go to step 5, else go to step 6.
 	
 	\smallskip
-	\textbf{Step 5.} If   and   go to step 2, else go to step 6.
+	\textbf{Step 5.} If $\Delta M_{k}<(1\pm0,3)M_{0}$  and $\Delta \phi_{k}<(1\pm0,3)\phi_{0}$  go to step 2, else go to step 6.
 	
 	\smallskip
-	\textbf{Step 6.} Set  .
+	\textbf{Step 6.} Set $k_{p}=k_{p,k-1}$ .
 	
 	\smallskip
 	\textbf{Step 7.} Stop the algorithm.
-	
 \end{algorithm}
 
-\begin{comment}
-Nastawy regulatora PID wyznaczone różnymi metodami opisanymi w literaturze często nie zawsze zapewniają wynikiów regulacji satysfakcjonujących satysfakcjonujące projek-tanta. Sposobem na poprawę jakości regulacji może być opisana w [11] iteracyjna metoda modyfikacji nastaw regulatora, która umożliwia polepszenie otrzymanych wskaźników regulacji, a w szczególności:
-1.	skrócenie czasu regulacji na wymuszenie skokowe,
-2.	skrócenie czasu regulacji przy wystąpieniu zakłócenia,
-3.	brak wysokich częstotliwości w sygnale wyjściowym.
-Iteracyjna metoda dostrajania regulatora (ang. fine–tuning -  FT) zaimplementowana w aplikacji PLC-PID Tuner wymaga, aby regulator był już zainstalowany w układzie oraz po-siadał wstępnie dobrane nastawy. Następnie wybierana jest nastawa do modyfikacji i rejestrowana jest odpowiedź układu na wymuszenie skokowe. Kolejnym krokiem jest obliczenie przeregulowania, zapasu modułu  i fazy. Założenia opisywanej metody są następujące [5]:
-1.	przeregulowanie nie może przekroczyć 5\%,
-2.	zapas modułu powinien być większy od 75\% wartości początkowej,
-3.	zapas fazy powinien być większy od 75\% wartości początkowej.
-
-Dokładny schemat postępowania przedstawiony jest w postaci algorytmów A1 i A2.
-Algorytm FT - A1 (iteracyjna modyfikacja wzmocnienia regulatora):
-1.	Ustawić krok iteracji k = 0. Ustawić w regulatorze początkowo dobrane wartości na-staw: kp0, Ti0 i Td0. Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrówwskaźników: przeregulowanie (κ), zapas modułu (M0) oraz zapas fazy (φ0). Przyjąć kp,0 = kp0.
-2.	Ustawić k = k + 1, a następnie kp,k = 1,05 • kp,k-1.
-3.	Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrów: κ, Mk oraz φk.
-4.	Jeżeli κ<5\% przejść do kroku 5 – ego. W innym przypadku przejść do kroku 6
-5.	Jeżeli Mk < (1 ± 0,3) M0 i φk < (1 ± 0,3)φ0, przejść do kroku 2. W innym przypadku kontynuować do kroku 6.
-6.	Ustawić lub kp = kp,k-1.
-7.	Koniec algorytmu.
-Algorytm FT - A2 (iteracyjna modyfikacja czasu całkowania regulatora)::
-1.	Ustawić k = 0. Ustawić w regulatorze początkowo dobrane wartości nastaw: kp0, Ti0 i Td0. Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pa-mięci wartości parametrówwskaźnikow: przeregulowanie (κ), zapas modułu (M0) oraz zapas fazy (φ0). Przyjąć Ti,0 = Ti0.
-2.	Ustawić k = k + 1, a następnie Ti,k = 0,95 • Ti,k-1.
-3.	Zbadać zachowanie układu na wymuszenie skokowe. Obliczyć i zapisać w pamięci wartości parametrówwskaźników: κ, Mk oraz φk.
-4.	Jeżeli κ<5\% przejść do kroku 5 – ego. W innym przypadku przejść do kroku 6.
-5.	Jeżeli Mk < (1 ± 0,3) M0 i φk < (1 ± 0,3)φ0, przejść do kroku 2. W innym przypadku kontynuować do kroku 6.
-6.	Ustawić Ti = Ti,k-1.
-7.	Koniec algorytmu.
-5.4.1.	Iteracyjne dostrajanie w programie PLC-PID Tuner
-Program PLC PID Tuner umożliwia przeprowadzenie procedury Fine – Tuningu  w trybie offline. Wykorzystany jest zaimplementowany w aplikacji symulator układu regulacji [9]. W programie zaimplementowano oba opisane algorytmy. Użytkownik za pomocą kontro-lek (Rysunek 5.11, Rysunek 5.12) wybiera rodzaj algorytmu. System sprawdza czy są speł-nione wymagania do przeprowadzenia procedury FT:
-•	sprawdzane jest czy obiekt regulacji istnieje,
-•	sprawdzane jest czy regulator istnieje,
-•	sprawdzany jest tryb pracy regulatora – w algorytmie A1, tryb pracy regulatora może być dowolny, zaś przy algorytmie A2 dopuszczalny tryb pracy to PI lub PID,
-Jeśli wymagania są spełnione to zapisywane są parametry istniejącego układu regulacji: kp0, Ti0, Td0, κ, M0 i φ0. Następnie za pomocą zaimplementowanego w programie symulatora układu regulacji (rozdział 3) rejestrowana jest odpowiedź układu regulacji na wymuszenie skokowe. Kolejną czynnością jest obliczenie nowych wartości κ, Mk oraz φk. Jeśli wymagania opisane w A1 lub A2 są spełnione algorytm jest kontynuowany. Po zakończeniu FT użytkownik jest informowany o wyniku, a nowe nastawy są wpisywane do regulatora w pro-jekcie. Naciśnięcie przycisku Fine Tuning na Rysunek 5.12 Okno Fine Tuningu wywołuje metodę FineTuning, która sprawdza czy spełnione są wymagania do przeprowadzenia FT i wyświetla nowe okno do wyboru nastawy, która ma być poddana modyfikacji.
-\end{comment}
+\begin{algorithm}[!h]
+	\caption{FT 2 - Iterative modification of the integral gain}
+	\label{a:alg1}
+	\textbf{Step 1.} Set the iteration step $k=0$ . Enter the pre-tuned set of PID settings: $k_{p0}$, $T_{I0}$, $T_{D0}$, perform the step response experiment. Calculate and save values: $\gamma_{0}$, $\Delta M_{0}$, and $\Delta \phi_{0}$. Set $T_{I,0}=T_{I0}$. If $\gamma_{0}<5\%$ go to step 2, else go to step 6. 
+	
+	\smallskip
+	\textbf{Step 2.} Set $k=k+1$, and $T_{i,k}=0,95 T_{I,k-1}$  .
+	
+	\smallskip
+	\textbf{Step 3.} Perform step response experiment, calculate values $\gamma_{k}$, $\Delta M_{k}$, and $\Delta \phi_{k}$.
+	
+	\smallskip
+	\textbf{Step 4.} If $\gamma_{k}<5\%$, go to step 5, else go to step 6.
+	
+	\smallskip
+	\textbf{Step 5.} If $\Delta M_{k}<(1\pm0,3)M_{0}$  and $\Delta \phi_{k}<(1\pm0,3)\phi_{0}$  go to step 2, else go to step 6.
+	
+	\smallskip
+	\textbf{Step 6.} Set $T_{I}=T_{I,k-1}$ .
+	
+	\smallskip
+	\textbf{Step 7.} Stop the algorithm.
+\end{algorithm}
 
 \section{Expemental verification}
 
@@ -244,33 +261,23 @@ The control algorithm was implemented on a Siemens S7-1200 PLC controller.
 \subsection{Identification of the control plant}
 
 \subsection{Selection of PID controller parameters}
-
-For the control of the process there was used the PID controller in the parallel form with filtered derivative part, described by the following equation [9]:
-(3)
-where    is proportional gain,   is integral time constant,   is derivative time constant and   is time constant of filter (  is chosen usually as 8÷10 [4]).
-The quality of the control system was analyzed in the time domain using fol-lowing indexes:
-Maximum error
-(4)
-Overshoot
-(5)
-where   and   are the first 2 consecutive biggest errors with opposite signs, as-suming steady state value of output   after transient response as the zero level (baseline).
-Transient response time  - it is the time between the moment of change of the set point  , or introduction of disturbances   , and the moment when the error   reaches a fixed value inside a boundary  .
-Integral Squared Error
-(6)
 %
 \subsection{Pre-tuning of PID controller}
-In [9] there are described 1731 different types of PID tuning rules, so the proper criteria should be used to choose the most suitable settings. Tuning rules selection (pre-tuning) criteria were as follows:
-
-a) Type of a process (stationary or nonstationary): the examined process is stationary process.
-b) Model of the process: the equation (2) describes FOLPD model.
-c) PID controller structure: the controller structure is described by (3).
-d) The ratio of transport delay and the time constant of the process:
-.	(7)
-For the given model (2)  .
+In \cite{Odwyer:2009} there are described 1731 different types of PID tuning rules, so the proper criteria should be used to choose the most suitable settings. Tuning rules selection (pre-tuning) criteria were as follows:
+%
+\begin{itemize}
+\item a) Type of a process (stationary or nonstationary).
+\item b) Model of the process.
+\item c) PID controller structure.
+\item d) The ratio of transport delay and the time constant of the process:
+\begin{equation}
+R=\dfrac{T_{d}}{T_{z}}
+\end{equation}
+\end{itemize}
 
 \subsection{Fine-tuning of PID controller}
 
-Obtained quality indices after the iterative modifications (Algroithm A1), are gathered in Table 2.
+Obtained quality indices after the iterative modifications (FT1 and FT 2), are gathered in Table 2.
 
 \section{Conclusions}
 

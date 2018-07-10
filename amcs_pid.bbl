@@ -1,6 +1,6 @@
 \begin{thebibliography}{xx}
 
-\harvarditem{}{n.d.}{Mozaryn:2013}
+\harvarditem{}{n.d.}{Mozaryn:2016}
   \harvardyearleft n.d.\harvardyearright .
 
 \harvarditem{Astrom \harvardand\ T.}{1995}{Astrom:1995}
@@ -8,11 +8,21 @@ Astrom, K. \harvardand\ T., H.  \harvardyearleft 1995\harvardyearright .
 \newblock {\em PID Controllers: Theory, Design, and Tuning, 2nd Edition},
   Instrument Society of America, Triangle Park, NC.
 
+\harvarditem{D.~Holejko}{2012}{Holejko:2012}
+D.~Holejko, W.~K.  \harvardyearleft 2012\harvardyearright .
+\newblock {\em Automation of Continuous Processes (in polish)}, OWPW, Warsaw.
+
 \harvarditem{G.H.~Cohen}{1953}{Cohen:1953}
 G.H.~Cohen, G.~C.  \harvardyearleft 1953\harvardyearright .
 \newblock Theoretical consideration of retarded control, {\em Transactions of
   the ASME} {\bf 75}(1):~827--834.
 \newblock DOI:.
+
+\harvarditem{J.~Mozaryn}{2013}{Mozaryn:2013}
+J.~Mozaryn, K.~M.  \harvardyearleft 2013\harvardyearright .
+\newblock Tuning rules selection and iterative modification of pid control
+  system parameters, {\em Proceedings of Mechatronics 2013 Conference, Brno,
+  Czech Republic}, pp.~677--684.
 
 \harvarditem{Janiszowski}{2002}{Janiszowski:2002}
 Janiszowski, K.  \harvardyearleft 2002\harvardyearright .
@@ -56,6 +66,10 @@ R.~Haber, L.~K.  \harvardyearleft 1999\harvardyearright .
 \harvarditem{R.H.~Bishop}{2010}{Bishop:2010}
 R.H.~Bishop, R.~D.  \harvardyearleft 2010\harvardyearright .
 \newblock {\em Modern Control Systems (12th ed)}, Prentice Hall.
+
+\harvarditem{Siemens}{2013}{Siemens:2013}
+Siemens  \harvardyearleft 2013\harvardyearright .
+\newblock Tia portal v13 – user guide.
 
 \harvarditem{Strejc}{1959}{Strejc:1959}
 Strejc, V.  \harvardyearleft 1959\harvardyearright .

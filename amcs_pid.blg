@@ -6,13 +6,11 @@ I was expecting a `,' or a `}'---line 91 of file amcs_pid.bib
  :          = "Ingenier\'{i}a",
 I'm skipping whatever remains of this entry
 Warning--string name "j.~mozaryn" is undefined
---line 149 of file amcs_pid.bib
-""" immediately follows a field name---line 149 of file amcs_pid.bib
- :  author = j.~mozaryn, K.~Malinowski
- :                                    ",
+--line 156 of file amcs_pid.bib
+I was expecting an "="---line 156 of file amcs_pid.bib
+ :  author = j.~mozaryn, w. 
+ :                          Kolaj, M.Syfert",
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "Mozaryn:2016"
-Warning--I didn't find a database entry for "Holejko:2010"
 Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
 while executing---line 1237 of file dcu.bst
 Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
@@ -55,8 +53,8 @@ Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusa
 while executing---line 1342 of file dcu.bst
 Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
 while executing---line 1342 of file dcu.bst
-Warning--empty author in Mozaryn:2013
-Warning--empty booktitle in Mozaryn:2013
+Warning--empty author in Mozaryn:2016
+Warning--empty booktitle in Mozaryn:2016
 Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
 while executing---line 1361 of file dcu.bst
 Too many commas in name 1 of "P.~Tatjewski, L.~Trybus, M.~Lawrynczuk , P.~Marusak, Z.~Swider, A.~Stec" for entry Trybus:2011
